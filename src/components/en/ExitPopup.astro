@@ -1,5 +1,5 @@
 ---
-import { X, Gift } from 'lucide-astro';
+import { X, Gift, MessageCircle } from 'lucide-astro';
 ---
 <div id="exit-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
   <div class="glass rounded-3xl p-8 max-w-md w-full mx-4 relative transform scale-95 translate-y-4 transition-all duration-300" id="exit-popup-content">
@@ -13,12 +13,13 @@ import { X, Gift } from 'lucide-astro';
     
     <h3 class="text-2xl font-bold text-white text-center mb-2">Wait! Don't leave...</h3>
     <p class="text-gray-300 text-center mb-6">
-      Get an exclusive <span class="text-secondary-400 font-bold">IBO Player Bonus</span> completely free with our 12-month IPTV subscription.
+      Order your IPTV subscription today and get <span class="text-secondary-400 font-bold">1 month FREE</span> on top!
     </p>
     
     <div class="space-y-3">
-      <a href="https://wa.me/18036582620" class="w-full flex justify-center items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg">
-        Claim Bonus
+      <a href="https://wa.me/18036582620?text=Hello,%20I%20would%20like%20to%20claim%20the%201%20month%20FREE%20offer" target="_blank" rel="noopener noreferrer" class="w-full flex justify-center items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-3.5 rounded-xl font-bold transition-all shadow-lg">
+        <MessageCircle class="w-5 h-5" />
+        Order via WhatsApp
       </a>
       <button id="decline-exit-popup" class="w-full text-gray-400 hover:text-white py-2 text-sm font-medium transition-colors">
         No thanks, I don't want a discount
