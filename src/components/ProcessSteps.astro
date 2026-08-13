@@ -1,0 +1,32 @@
+---
+import { ShoppingCart, Download, PlayCircle } from 'lucide-astro';
+
+const steps = [
+  { icon: ShoppingCart, title: "1. Objednávka", desc: "Vyberte si předplatné z našeho ceníku a kontaktujte nás přes WhatsApp." },
+  { icon: Download, title: "2. Instalace a Nastavení", desc: "Nainstalujte si IPTV aplikaci na vaše zařízení. Rádi vám s tím pomůžeme." },
+  { icon: PlayCircle, title: "3. Sledujte okamžitě", desc: "Po spárování získáte okamžitý přístup ke svému obsahu v plné kvalitě." }
+];
+---
+<section class="py-24 relative z-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Jak to funguje?</h2>
+      <p class="text-gray-400 text-lg">Tři jednoduché kroky k vaší nové televizi.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-primary-500/0 via-primary-500/50 to-primary-500/0"></div>
+      
+      {steps.map((step, idx) => (
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-24 h-24 rounded-full glass flex items-center justify-center mb-6 relative z-10 border-2 border-primary-500/30">
+            <span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold">{idx + 1}</span>
+            <step.icon class="w-10 h-10 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">{step.title}</h3>
+          <p class="text-gray-400">{step.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

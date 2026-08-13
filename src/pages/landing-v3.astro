@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StickyHeader from '../components/StickyHeader.astro';
+import Hero from '../components/Hero.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import PricingCard from '../components/PricingCard.astro';
+import ReferralBanner from '../components/ReferralBanner.astro';
+import UserReviewsSection from '../components/UserReviewsSection.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import SupportedDevices from '../components/SupportedDevices.astro';
+import CitiesList from '../components/CitiesList.astro';
+import ContactForm from '../components/ContactForm.astro';
+import FAQSection from '../components/FAQSection.astro';
+import CTASection from '../components/CTASection.astro';
+import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+import GroupsPopup from '../components/GroupsPopup.astro';
+import ExitPopup from '../components/ExitPopup.astro';
+import SocialPopup from '../components/SocialPopup.astro';
+
+// V3 Focus: Smart TV & App Intent (No live scores here to test conversion)
+---
+<Layout title="IPTV pro Smart TV - Aplikace a Nastavení | IPTV-CZ" description="Nastavení IPTV CZ na Samsung, LG a Android TV nebylo nikdy jednodušší. Stabilní servery a 4K kvalita pro vaši Smart TV.">
+  <StickyHeader />
+  <main>
+    <Hero />
+    <FeatureGrid />
+    <section id="pricing" class="py-24 bg-gray-900/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Vyberte si své předplatné</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-center lg:items-stretch pt-4">
+          <PricingCard title="12 Měsíců" price="35 €" period="rok" isPopular={true} bonus="IBO Player Aktivace ZDARMA" features={["4K / FHD Kvalita", "Archív & Zpětné zhlédnutí", "Premium Sport a Filmy", "24/7 VIP Podpora", "Anti-Freeze Technologie"]} />
+          <PricingCard title="6 Měsíců" price="20 €" period="půlrok" features={["4K / FHD Kvalita", "Archív & Zpětné zhlédnutí", "Premium Sport a Filmy", "24/7 Podpora"]} />
+          <PricingCard title="3 Měsíce" price="10 €" period="čtvrtletí" features={["4K / FHD Kvalita", "Archív", "Základní Podpora"]} />
+          <PricingCard title="1 Měsíc" price="5 €" period="měsíc" features={["4K / FHD Kvalita", "Základní Podpora"]} />
+        </div>
+      </div>
+    </section>
+    <ReferralBanner />
+    <UserReviewsSection />
+    <ProcessSteps />
+    <SupportedDevices />
+    <CitiesList />
+    <ContactForm />
+    <FAQSection />
+    <CTASection />
+  </main>
+  <FloatingWhatsApp />
+  <GroupsPopup />
+  <ExitPopup />
+  <SocialPopup />
+</Layout>

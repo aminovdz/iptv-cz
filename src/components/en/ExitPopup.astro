@@ -1,0 +1,61 @@
+---
+import { X, Gift } from 'lucide-astro';
+---
+<div id="exit-popup" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+  <div class="glass rounded-3xl p-8 max-w-md w-full mx-4 relative transform scale-95 translate-y-4 transition-all duration-300" id="exit-popup-content">
+    <button id="close-exit-popup" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 rounded-full p-1 transition-colors" aria-label="Close">
+      <X class="w-5 h-5" />
+    </button>
+    
+    <div class="w-16 h-16 bg-secondary-500/20 rounded-full flex items-center justify-center mb-6 mx-auto">
+      <Gift class="w-8 h-8 text-secondary-500" />
+    </div>
+    
+    <h3 class="text-2xl font-bold text-white text-center mb-2">Wait! Don't leave...</h3>
+    <p class="text-gray-300 text-center mb-6">
+      Get an exclusive <span class="text-secondary-400 font-bold">IBO Player Bonus</span> completely free with our 12-month IPTV subscription.
+    </p>
+    
+    <div class="space-y-3">
+      <a href="https://wa.me/18036582620" class="w-full flex justify-center items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg">
+        Claim Bonus
+      </a>
+      <button id="decline-exit-popup" class="w-full text-gray-400 hover:text-white py-2 text-sm font-medium transition-colors">
+        No thanks, I don't want a discount
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let hasShown = false;
+  
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 0 && !hasShown && !localStorage.getItem('exit_popup_closed')) {
+      showPopup();
+    }
+  });
+
+  function showPopup() {
+    const popup = document.getElementById('exit-popup');
+    const content = document.getElementById('exit-popup-content');
+    if(popup && content) {
+      popup.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95', 'translate-y-4');
+      hasShown = true;
+    }
+  }
+
+  function hidePopup() {
+    const popup = document.getElementById('exit-popup');
+    const content = document.getElementById('exit-popup-content');
+    if(popup && content) {
+      popup.classList.add('opacity-0', 'pointer-events-none');
+      content.classList.add('scale-95', 'translate-y-4');
+      localStorage.setItem('exit_popup_closed', 'true');
+    }
+  }
+
+  document.getElementById('close-exit-popup')?.addEventListener('click', hidePopup);
+  document.getElementById('decline-exit-popup')?.addEventListener('click', hidePopup);
+</script>

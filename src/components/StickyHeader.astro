@@ -1,0 +1,64 @@
+---
+import { Menu, X, MonitorPlay } from 'lucide-astro';
+---
+<header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="header">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0 flex items-center gap-2">
+        <MonitorPlay class="h-8 w-8 text-primary-500" />
+        <a href="/" class="text-xl font-bold text-white tracking-tight">IPTV-CZ</a>
+      </div>
+      <nav class="hidden md:flex space-x-8">
+        <a href="/#features" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Funkce</a>
+        <a href="/#pricing" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Ceník</a>
+        <a href="/#devices" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Zařízení</a>
+        <a href="/#faq" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">FAQ</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="flex items-center gap-2 border-r border-white/20 pr-4 mr-2">
+          <a href="/" class="text-xs font-bold text-white">CZ</a>
+          <span class="text-xs text-white/20">|</span>
+          <a href="/en" class="text-xs font-bold text-gray-400 hover:text-white transition-colors">EN</a>
+        </div>
+        <a href="https://wa.me/18036582620" class="text-sm font-medium text-white hover:text-primary-100">Podpora</a>
+        <a href="/#pricing" class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg hover:shadow-primary-500/25">
+          Vyzkoušet
+        </a>
+      </div>
+      <!-- Mobile menu button -->
+      <div class="md:hidden flex items-center">
+        <button type="button" class="text-gray-300 hover:text-white p-2" id="mobile-menu-btn" aria-label="Menu">
+          <Menu class="h-6 w-6" id="icon-open" />
+          <X class="h-6 w-6 hidden" id="icon-close" />
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div class="md:hidden hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <a href="/#features" class="block px-3 py-2 text-base font-medium text-white hover:bg-white/5 rounded-md">Funkce</a>
+      <a href="/#pricing" class="block px-3 py-2 text-base font-medium text-white hover:bg-white/5 rounded-md">Ceník</a>
+      <a href="/#devices" class="block px-3 py-2 text-base font-medium text-white hover:bg-white/5 rounded-md">Zařízení</a>
+      <a href="/#faq" class="block px-3 py-2 text-base font-medium text-white hover:bg-white/5 rounded-md">FAQ</a>
+      <div class="border-t border-white/10 mt-2 pt-2 px-3 flex gap-4">
+        <a href="/" class="text-sm font-bold text-white">CZ</a>
+        <a href="/en" class="text-sm font-bold text-gray-400 hover:text-white">EN</a>
+      </div>
+    </div>
+  </div>
+</header>
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+  
+  if(btn && menu && iconOpen && iconClose) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+      iconOpen.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+    });
+  }
+</script>

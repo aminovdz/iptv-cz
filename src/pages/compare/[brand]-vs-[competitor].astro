@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StickyHeader from '../../components/StickyHeader.astro';
+import FloatingWhatsApp from '../../components/FloatingWhatsApp.astro';
+import { Check, X } from 'lucide-astro';
+
+export const prerender = true;
+export function getStaticPaths() {
+  const competitors = [
+    { id: 'sledovanitv', name: 'SledovaniTV' },
+    { id: 'iptv-cz', name: 'IPTV.cz' },
+    { id: 'czskiptv', name: 'CZSK IPTV' }
+  ];
+  
+  return competitors.map((comp) => ({
+    params: { brand: 'iptv-cz', competitor: comp.id },
+    props: { competitorName: comp.name },
+  }));
+}
+
+const { competitorName } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": `IPTV-CZ vs ${competitorName}: Detailní srovnání pro rok 2026`,
+  "author": {
+    "@type": "Organization",
+    "name": "IPTV-CZ"
+  }
+};
+---
+
+<Layout title={`IPTV-CZ vs ${competitorName} - Detailní Srovnání | IPTV-CZ`} description={`Objektivní srovnání IPTV-CZ a ${competitorName}. Zjistěte, která internetová televize nabízí lepší cenu, kvalitu a stabilitu pro rok 2026.`} schema={schema}>
+  <StickyHeader />
+  <main class="pt-32 pb-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 text-center">IPTV-CZ vs {competitorName}</h1>
+      <p class="text-xl text-gray-400 text-center mb-16">Upřímné srovnání cen, funkcí a stability. Kterou IPTV službu si vybrat?</p>
+
+      <div class="glass rounded-3xl overflow-hidden mb-16">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-900/50">
+              <th class="p-6 border-b border-white/10 text-white font-bold text-lg">Funkce</th>
+              <th class="p-6 border-b border-white/10 text-primary-400 font-bold text-lg bg-primary-900/20 text-center">IPTV-CZ</th>
+              <th class="p-6 border-b border-white/10 text-gray-300 font-bold text-lg text-center">{competitorName}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5">
+              <td class="p-6 text-gray-300">Cena za 12 měsíců</td>
+              <td class="p-6 text-white font-bold text-center bg-primary-900/10">35 EUR</td>
+              <td class="p-6 text-gray-400 text-center">Vyšší</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="p-6 text-gray-300">4K Kvalita obrazu</td>
+              <td class="p-6 bg-primary-900/10"><Check class="w-6 h-6 text-green-500 mx-auto" /></td>
+              <td class="p-6"><Check class="w-6 h-6 text-gray-500 mx-auto" /></td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="p-6 text-gray-300">Dlouhodobé závazky</td>
+              <td class="p-6 bg-primary-900/10"><X class="w-6 h-6 text-green-500 mx-auto" /> (Bez závazků)</td>
+              <td class="p-6"><Check class="w-6 h-6 text-red-500 mx-auto" /> (Často nutné)</td>
+            </tr>
+            <tr>
+              <td class="p-6 text-gray-300">Bonusová aplikace ZDARMA</td>
+              <td class="p-6 bg-primary-900/10"><Check class="w-6 h-6 text-green-500 mx-auto" /> (IBO Player)</td>
+              <td class="p-6"><X class="w-6 h-6 text-red-500 mx-auto" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prose prose-invert prose-primary mx-auto">
+        <h2>Konečný verdikt</h2>
+        <p>Zatímco {competitorName} je silným hráčem na trhu, IPTV-CZ se zaměřuje na poskytování nekompromisní kvality za zlomek ceny, bez nutnosti uzavírat dlouhodobé a nevýhodné smlouvy.</p>
+        <p>Naše cena <strong>35 EUR za 12 měsíců</strong> navíc zahrnuje bonusovou aktivaci prémiové aplikace IBO Player pro vaši Smart TV, čímž vzniká propastný rozdíl v hodnotě, kterou jako zákazník dostáváte.</p>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="/" class="inline-flex bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+          Vyzkoušet IPTV-CZ nyní
+        </a>
+      </div>
+    </div>
+  </main>
+  <FloatingWhatsApp />
+</Layout>

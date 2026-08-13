@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StickyHeader from '../../components/StickyHeader.astro';
+import FeatureGrid from '../../components/FeatureGrid.astro';
+import PricingCard from '../../components/PricingCard.astro';
+import CitiesList from '../../components/CitiesList.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import CTASection from '../../components/CTASection.astro';
+import FloatingWhatsApp from '../../components/FloatingWhatsApp.astro';
+import { Play, MapPin } from 'lucide-astro';
+
+export const prerender = true;
+export function getStaticPaths() {
+  const cities = [
+    { city: 'praha', name: 'Praha' },
+    { city: 'brno', name: 'Brno' },
+    { city: 'ostrava', name: 'Ostrava' },
+    { city: 'plzen', name: 'Plzeň' },
+    { city: 'liberec', name: 'Liberec' },
+    { city: 'olomouc', name: 'Olomouc' }
+  ];
+  
+  return cities.map(({ city, name }) => ({
+    params: { city },
+    props: { cityName: name },
+  }));
+}
+
+const { cityName } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": `IPTV CZ ${cityName} - IPTV-CZ`,
+  "image": "https://iptv-cz.net/og-image.jpg",
+  "description": `Nejlepší a nejstabilnější poskytovatel internetové televize v lokalitě ${cityName}. Sledujte bez výpadků od 5 EUR.`,
+  "areaServed": {
+    "@type": "City",
+    "name": cityName
+  },
+  "priceRange": "5€ - 35€",
+  "telephone": "+18036582620"
+};
+---
+
+<Layout title={`IPTV ${cityName} - Nejlepší Internetová Televize | IPTV-CZ`} description={`Hledáte spolehlivou IPTV v lokalitě ${cityName}? Vyzkoušejte IPTV-CZ. 4K kvalita, stabilní servery a podpora Smart TV.`} schema={schema}>
+  <StickyHeader />
+  
+  <main>
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute top-20 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-[128px]"></div>
+      </div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-primary-100 mb-8">
+          <MapPin class="w-4 h-4 text-secondary-500" />
+          Dostupné v lokalitě {cityName} a okolí
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          Nejlepší IPTV v<br class="hidden sm:block" />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-500">{cityName}</span>
+        </h1>
+        
+        <p class="mt-4 max-w-2xl text-xl text-gray-300 mx-auto mb-10">
+          Užijte si prémiové sledování televize přímo u vás doma. Stabilní servery a bleskové nastavení pro obyvatele města {cityName}.
+        </p>
+        
+        <a href="#pricing" class="inline-flex justify-center items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-[0_0_40px_-10px_rgba(17,69,126,0.5)]">
+          <Play class="w-5 h-5 fill-current" />
+          Zobrazit Ceník pro {cityName}
+        </a>
+      </div>
+    </section>
+    
+    <FeatureGrid />
+    
+    <section id="pricing" class="py-24 bg-gray-900/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Vyberte si své předplatné</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
+          <PricingCard title="12 Měsíců" price="35 €" period="rok" isPopular={true} bonus="IBO Player Aktivace ZDARMA" features={["4K / FHD Kvalita", "Archív & Zpětné zhlédnutí", "Premium Sport", "24/7 VIP Podpora"]} />
+          <PricingCard title="6 Měsíců" price="20 €" period="půlrok" features={["4K / FHD Kvalita", "Archív", "Premium Sport", "24/7 Podpora"]} />
+          <PricingCard title="3 Měsíce" price="10 €" period="čtvrtletí" features={["4K / FHD Kvalita", "Archív", "Základní Podpora"]} />
+          <PricingCard title="1 Měsíc" price="5 €" period="měsíc" features={["4K / FHD Kvalita", "Základní Podpora"]} />
+        </div>
+      </div>
+    </section>
+
+    <CitiesList />
+    <ContactForm />
+    <FAQSection />
+    <CTASection />
+  </main>
+  
+  <FloatingWhatsApp />
+</Layout>

@@ -1,0 +1,118 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StickyHeader from '../../components/en/StickyHeader.astro';
+import Hero from '../../components/en/Hero.astro';
+import FeatureGrid from '../../components/en/FeatureGrid.astro';
+import PricingCard from '../../components/en/PricingCard.astro';
+import ReferralBanner from '../../components/en/ReferralBanner.astro';
+import UserReviewsSection from '../../components/en/UserReviewsSection.astro';
+import ProcessSteps from '../../components/en/ProcessSteps.astro';
+import SupportedDevices from '../../components/en/SupportedDevices.astro';
+import CitiesList from '../../components/en/CitiesList.astro';
+import ContactForm from '../../components/en/ContactForm.astro';
+import FAQSection from '../../components/en/FAQSection.astro';
+import CTASection from '../../components/en/CTASection.astro';
+import FloatingWhatsApp from '../../components/en/FloatingWhatsApp.astro';
+import GroupsPopup from '../../components/en/GroupsPopup.astro';
+import ExitPopup from '../../components/en/ExitPopup.astro';
+import SocialPopup from '../../components/en/SocialPopup.astro';
+import LatestGuides from '../../components/en/LatestGuides.astro';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "IPTV Subscription",
+  "description": "The best internet television IPTV. Stable 4K picture and exclusive bonuses.",
+  "brand": {
+    "@type": "Brand",
+    "name": "IPTV-CZ"
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": "5.00",
+    "highPrice": "35.00",
+    "priceCurrency": "EUR",
+    "offerCount": "4"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "5234"
+  },
+  "review": {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "David"
+    }
+  }
+};
+---
+<Layout title="IPTV - Best Internet Television 2026 | IPTV-CZ" description="Watch premium IPTV without buffering. 4K quality, stable servers. Get a subscription from 5 EUR per month. Smart TV, Android, iOS support." schema={schema} lang="en">
+  <StickyHeader />
+  
+  <main>
+    <div class="relative">
+      <Hero />
+    </div>
+    
+    <FeatureGrid />
+    
+    <section id="pricing" class="py-24 bg-gray-900/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Choose your subscription</h2>
+          <p class="text-gray-400">No contracts, instant delivery and 24/7 support.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-center lg:items-stretch pt-4">
+          <PricingCard 
+            title="12 Months" 
+            price="35 €" 
+            period="year" 
+            isPopular={true}
+            bonus="FREE IBO Player Activation"
+            features={["4K / FHD Quality", "Archive & Catch-up", "Premium Sports and Movies", "24/7 VIP Support", "Anti-Freeze Technology"]} 
+          />
+          <PricingCard 
+            title="6 Months" 
+            price="20 €" 
+            period="half-year" 
+            features={["4K / FHD Quality", "Archive & Catch-up", "Premium Sports and Movies", "24/7 Support"]} 
+          />
+          <PricingCard 
+            title="3 Months" 
+            price="10 €" 
+            period="quarter" 
+            features={["4K / FHD Quality", "Archive", "Basic Support"]} 
+          />
+          <PricingCard 
+            title="1 Month" 
+            price="5 €" 
+            period="month" 
+            features={["4K / FHD Quality", "Basic Support"]} 
+          />
+        </div>
+      </div>
+    </section>
+    
+    <ReferralBanner />
+    <UserReviewsSection />
+    <ProcessSteps />
+    <SupportedDevices />
+    <CitiesList />
+    <LatestGuides />
+    <ContactForm />
+    <FAQSection />
+    <CTASection />
+  </main>
+
+  <FloatingWhatsApp />
+  <GroupsPopup />
+  <ExitPopup />
+  <SocialPopup />
+</Layout>

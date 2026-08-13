@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StickyHeader from '../components/StickyHeader.astro';
+import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+import { Users, CheckCircle, Share2, Gift } from 'lucide-astro';
+---
+<Layout title="Referral Program - Získejte IPTV ZDARMA | IPTV-CZ" description="Přiveďte své přátele k IPTV-CZ a získejte 1 měsíc sledování zcela zdarma pro oba.">
+  <StickyHeader />
+  <main class="pt-32 pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-500/20 text-secondary-300 border border-secondary-500/30 text-sm font-medium mb-6">
+          🎁 Sdílejte a ušetřete
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6">Získejte IPTV ZDARMA</h1>
+        <p class="text-xl text-gray-400">Přiveďte kamaráda. On získá slevu, vy získáte měsíc sledování zdarma. Win-win pro všechny.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 relative">
+        <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-primary-500/0 via-primary-500/50 to-primary-500/0"></div>
+        
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-24 h-24 rounded-full glass flex items-center justify-center mb-6 relative z-10 border-2 border-primary-500/30">
+            <Share2 class="w-10 h-10 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">1. Získejte svůj kód</h3>
+          <p class="text-gray-400">Napište nám na WhatsApp a vygenerujeme vám unikátní doporučující kód.</p>
+        </div>
+        
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-24 h-24 rounded-full glass flex items-center justify-center mb-6 relative z-10 border-2 border-primary-500/30">
+            <Users class="w-10 h-10 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">2. Pozvěte přátele</h3>
+          <p class="text-gray-400">Sdílejte kód s rodinou a přáteli. Oni ho uplatní při své první objednávce.</p>
+        </div>
+        
+        <div class="relative flex flex-col items-center text-center">
+          <div class="w-24 h-24 rounded-full glass flex items-center justify-center mb-6 relative z-10 border-2 border-primary-500/30">
+            <Gift class="w-10 h-10 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">3. Odměna pro oba</h3>
+          <p class="text-gray-400">Váš účet bude prodloužen o 1 měsíc zdarma. Neexistuje žádný limit na počet pozvánek!</p>
+        </div>
+      </div>
+
+      <div class="glass max-w-2xl mx-auto rounded-3xl p-8 text-center bg-gradient-to-b from-primary-900/40 to-transparent">
+        <h3 class="text-2xl font-bold text-white mb-4">Začněte ještě dnes</h3>
+        <p class="text-gray-300 mb-8">Napište naší podpoře a řekněte si o svůj referral kód.</p>
+        <a href="https://wa.me/18036582620" class="inline-block bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-[0_0_30px_rgba(17,69,126,0.4)] hover:scale-105">
+          Získat referral kód přes WhatsApp
+        </a>
+      </div>
+
+    </div>
+  </main>
+  <FloatingWhatsApp />
+</Layout>

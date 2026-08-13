@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StickyHeader from '../components/StickyHeader.astro';
+import ContactForm from '../components/ContactForm.astro';
+import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+---
+<Layout title="Kontaktujte nás - 24/7 Podpora | IPTV-CZ" description="Máte dotazy k IPTV CZ? Kontaktujte naši podporu přes WhatsApp, Telegram nebo e-mail. Jsme tu pro vás 24 hodin denně.">
+  <StickyHeader />
+  <main class="pt-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6">Jak vám můžeme pomoci?</h1>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto">Vyberte si způsob komunikace, který vám nejvíce vyhovuje. Odpovídáme obratem.</p>
+    </div>
+    
+    <ContactForm />
+  </main>
+  <FloatingWhatsApp />
+</Layout>

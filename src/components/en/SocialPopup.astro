@@ -1,0 +1,44 @@
+---
+import { Bell } from 'lucide-astro';
+---
+<div id="social-popup" class="fixed bottom-24 left-6 z-40 glass rounded-xl p-4 shadow-2xl flex items-center gap-4 transform translate-y-[150%] opacity-0 transition-all duration-500 max-w-sm">
+  <div class="w-10 h-10 rounded-full bg-secondary-500/20 flex items-center justify-center shrink-0">
+    <Bell class="w-5 h-5 text-secondary-500 animate-pulse" />
+  </div>
+  <div>
+    <p class="text-white text-sm font-medium" id="sp-text">Someone from Prague just bought</p>
+    <p class="text-gray-400 text-xs mt-0.5" id="sp-product">12 month IPTV subscription</p>
+    <p class="text-primary-400 text-[10px] mt-1" id="sp-time">2 minutes ago</p>
+  </div>
+</div>
+
+<script>
+  const cities = ["Prague", "Brno", "Ostrava", "London", "Berlin"];
+  const products = ["12 month IPTV subscription", "6 month IPTV subscription", "3 month IPTV subscription"];
+  const times = ["A minute ago", "2 minutes ago", "5 minutes ago", "Just now"];
+
+  function showSocialPopup() {
+    const popup = document.getElementById('social-popup');
+    if(!popup || window.innerWidth < 768) return; // Hide on mobile to save space
+
+    // Randomize content
+    document.getElementById('sp-text').innerText = `Someone from ${cities[Math.floor(Math.random() * cities.length)]} just bought`;
+    document.getElementById('sp-product').innerText = products[Math.floor(Math.random() * products.length)];
+    document.getElementById('sp-time').innerText = times[Math.floor(Math.random() * times.length)];
+
+    // Show popup
+    popup.classList.remove('translate-y-[150%]', 'opacity-0');
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+      popup.classList.add('translate-y-[150%]', 'opacity-0');
+    }, 5000);
+  }
+
+  // Initial delay
+  setTimeout(() => {
+    showSocialPopup();
+    // Then repeat every 25 seconds
+    setInterval(showSocialPopup, 25000);
+  }, 10000);
+</script>

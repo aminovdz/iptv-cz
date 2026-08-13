@@ -1,0 +1,43 @@
+---
+import { ChevronDown } from 'lucide-astro';
+
+const faqs = [
+  { q: "What do I need to use IPTV?", a: "To use our IPTV service, you only need a stable internet connection and a supported device (Smart TV, PC, mobile, or set-top box)." },
+  { q: "What internet speed is required?", a: "For standard quality, a stable 10 Mbps is sufficient. For smooth 4K viewing, we recommend at least 25 Mbps, ideally connected via ethernet cable." },
+  { q: "Is there any contract?", a: "No, all our subscriptions are completely contract-free. You can renew or cancel anytime according to your needs." },
+  { q: "Can I watch TV abroad?", a: "Absolutely! Our IPTV works worldwide without geoblocking. Whether you're on vacation or a business trip, your favorite channels are always with you." },
+  { q: "How do I get IBO Player for free?", a: "We provide FREE premium activation of the IBO Player app exclusively with every 12-month subscription purchase. We will pair the app remotely after receiving your TV's MAC address." },
+  { q: "Can I watch on multiple devices?", a: "The standard subscription is for one device. To watch on multiple devices simultaneously, please contact us for a custom offer." },
+  { q: "What payment methods do you accept?", a: "We support payments by card, PayPal, and cryptocurrencies for maximum anonymity and convenience." }
+];
+---
+<section id="faq" class="py-24">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+      <p class="text-gray-400">Everything you need to know about our internet television.</p>
+    </div>
+    
+    <div class="space-y-4">
+      {faqs.map((faq) => (
+        <details class="glass rounded-xl group" name="faq">
+          <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-white text-lg">
+            <span>{faq.q}</span>
+            <span class="transition group-open:rotate-180">
+              <ChevronDown class="w-5 h-5 text-gray-400" />
+            </span>
+          </summary>
+          <div class="text-gray-400 px-6 pb-6 pt-2">
+            {faq.a}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

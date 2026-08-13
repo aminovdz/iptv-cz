@@ -1,0 +1,32 @@
+---
+import { Zap, Tv, Shield, Clock, Smartphone, Globe } from 'lucide-astro';
+
+const features = [
+  { icon: Tv, title: "4K & FHD Quality", desc: "Crystal clear picture with no buffering for the ultimate experience." },
+  { icon: Zap, title: "Anti-Freeze Technology", desc: "Our servers guarantee 99.9% uptime with no interruptions." },
+  { icon: Clock, title: "Catch-up TV", desc: "Missed a show? Watch it from the archive anytime." },
+  { icon: Smartphone, title: "All Devices", desc: "Smart TV, Android, iOS, PC, MAG and more." },
+  { icon: Shield, title: "Secure Solution", desc: "Top-tier security for your data and anonymity." },
+  { icon: Globe, title: "IPTV Worldwide", desc: "Watch premium channels without geoblocking from anywhere." }
+];
+---
+<section id="features" class="py-24 relative z-10 bg-gray-900/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Why choose IPTV-CZ?</h2>
+      <p class="text-gray-400 text-lg">Premium technology and dedicated servers ensure flawless internet television viewing.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {features.map(f => (
+        <div class="glass rounded-2xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+          <div class="w-14 h-14 bg-primary-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary-500/20 transition-colors">
+            <f.icon class="w-7 h-7 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">{f.title}</h3>
+          <p class="text-gray-400 leading-relaxed">{f.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

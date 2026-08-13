@@ -1,0 +1,58 @@
+---
+import { Play, CheckCircle2 } from 'lucide-astro';
+---
+<section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+  <!-- Background glow -->
+  <div class="absolute inset-0 z-0 pointer-events-none">
+    <div class="absolute top-20 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-[128px]"></div>
+    <div class="absolute top-40 right-1/4 w-96 h-96 bg-secondary-500/10 rounded-full blur-[128px]"></div>
+  </div>
+  
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-primary-100 mb-8 animate-fade-in-up">
+      <span class="flex h-2 w-2 rounded-full bg-secondary-500 animate-pulse"></span>
+      Nejlepší IPTV CZ pro rok 2026
+    </div>
+    
+    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight animate-fade-in-up" style="animation-delay: 100ms;">
+      Nová éra <br class="hidden sm:block" />
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-500">Internetové Televize</span>
+    </h1>
+    
+    <p class="mt-4 max-w-2xl text-xl text-gray-300 mx-auto mb-10 animate-fade-in-up" style="animation-delay: 200ms;">
+      Sledujte prémiový obsah ve 4K kvalitě bez výpadků. Stabilní IPTV CZ řešení pro všechny vaše zařízení od 5 EUR.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 300ms;">
+      <a href="#pricing" class="inline-flex justify-center items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-full text-lg font-bold transition-all shadow-[0_0_40px_-10px_rgba(17,69,126,0.5)] hover:scale-105">
+        <Play class="w-5 h-5 fill-current" />
+        Vybrat předplatné
+      </a>
+      <a href="https://wa.me/18036582620" class="inline-flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-full text-lg font-semibold transition-all backdrop-blur-sm">
+        Kontaktovat podporu
+      </a>
+    </div>
+    
+    <div class="mt-12 flex flex-wrap justify-center gap-6 text-sm text-gray-400 animate-fade-in-up" style="animation-delay: 400ms;">
+      <span class="flex items-center gap-1.5"><CheckCircle2 class="w-4 h-4 text-secondary-500" /> Okamžité doručení</span>
+      <span class="flex items-center gap-1.5"><CheckCircle2 class="w-4 h-4 text-secondary-500" /> Bez závazků</span>
+      <span class="flex items-center gap-1.5"><CheckCircle2 class="w-4 h-4 text-secondary-500" /> 24/7 Podpora</span>
+    </div>
+    
+    <div class="mt-20 relative mx-auto max-w-5xl animate-fade-in-up" style="animation-delay: 500ms;">
+      <div class="absolute -inset-1 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl blur opacity-30"></div>
+      <img src="/images/hero.jpg" alt="Sledování internetové televize IPTV CZ na Smart TV" class="relative rounded-2xl border border-white/10 shadow-2xl w-full object-cover aspect-video" />
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+</style>

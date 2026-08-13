@@ -1,0 +1,73 @@
+---
+import { Mail, MessageCircle, Send } from 'lucide-astro';
+---
+<section class="py-24 bg-gray-900/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row gap-16">
+      <!-- Contact Info -->
+      <div class="w-full lg:w-1/3">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Get in Touch</h2>
+        <p class="text-gray-400 mb-8">
+          Have a question about our IPTV service? Need help with installation? Our team is here for you 24/7.
+        </p>
+        
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full glass flex items-center justify-center shrink-0">
+              <MessageCircle class="w-6 h-6 text-primary-400" />
+            </div>
+            <div>
+              <p class="text-white font-bold mb-1">WhatsApp Support</p>
+              <a href="https://wa.me/18036582620" class="text-gray-400 hover:text-primary-400 transition-colors block text-sm">Chat with us instantly</a>
+              <a href="https://whatsapp.com/channel/0029VayVaLpD8SE3bf8wMY3v" class="text-gray-400 hover:text-primary-400 transition-colors block text-sm mt-1">Follow our WA Channel</a>
+            </div>
+          </div>
+          
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full glass flex items-center justify-center shrink-0">
+              <Send class="w-6 h-6 text-primary-400" />
+            </div>
+            <div>
+              <p class="text-white font-bold mb-1">Telegram</p>
+              <a href="https://t.me/castvera_com" class="text-gray-400 hover:text-primary-400 transition-colors block text-sm">Join our Telegram</a>
+            </div>
+          </div>
+          
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full glass flex items-center justify-center shrink-0">
+              <Mail class="w-6 h-6 text-primary-400" />
+            </div>
+            <div>
+              <p class="text-white font-bold mb-1">Email</p>
+              <a href="mailto:contact@iptv-cz.net" class="text-gray-400 hover:text-primary-400 transition-colors block text-sm">contact@iptv-cz.net</a>
+              <a href="mailto:support@castvera.com" class="text-gray-400 hover:text-primary-400 transition-colors block text-sm mt-1">support@castvera.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contact Form -->
+      <div class="w-full lg:w-2/3">
+        <form class="glass p-8 rounded-3xl" onsubmit="event.preventDefault(); alert('Message sent! (This is a demo form, use WhatsApp or Email for real contact)');">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+              <input type="text" id="name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="John Doe" required />
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <input type="email" id="email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="john@doe.com" required />
+            </div>
+          </div>
+          <div class="mb-6">
+            <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+            <textarea id="message" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="How can we help you?" required></textarea>
+          </div>
+          <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl transition-colors shadow-lg">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

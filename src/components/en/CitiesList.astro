@@ -1,0 +1,17 @@
+---
+const cities = ["Praha", "Brno", "Ostrava", "Plzeň"];
+---
+<section class="py-16 border-t border-white/5 bg-black/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-sm font-medium text-gray-500 uppercase tracking-widest mb-6">Available throughout the Czech Republic</p>
+    <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+      {cities.map(city => (
+        <a href={`/locations/${city.toLowerCase()}`} class="px-5 py-2 md:px-6 rounded-full glass text-gray-300 hover:text-white hover:border-primary-500/50 transition-all text-sm md:text-base">
+          IPTV {city}
+        </a>
+      ))}
+      <a href="/locations/liberec" class="px-5 py-2 md:px-6 rounded-full glass text-gray-300 hover:text-white hover:border-primary-500/50 transition-all text-sm md:text-base">IPTV Liberec</a>
+      <a href="/locations/olomouc" class="px-5 py-2 md:px-6 rounded-full glass text-gray-300 hover:text-white hover:border-primary-500/50 transition-all text-sm md:text-base">IPTV Olomouc</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+---
+import { Star } from 'lucide-astro';
+
+const reviews = [
+  { name: "Petr Novák", role: "Praha", text: "Nejlepší IPTV CZ co jsem zkusil. Kvalita obrazu u sportovních přenosů je neuvěřitelná. Žádné sekání ani o víkendu.", rating: 5 },
+  { name: "Jana Svobodová", role: "Brno", text: "Skvělá podpora na WhatsAppu. Pomohli mi vše nastavit na mé starší Samsung televizi během 5 minut.", rating: 5 },
+  { name: "Martin Dvořák", role: "Ostrava", text: "Přešel jsem od konkurence kvůli ceně a byl jsem překvapen kvalitou. Bonus k ročnímu předplatnému je super.", rating: 5 }
+];
+---
+<section class="py-24 bg-gray-900/30">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Co o IPTV-CZ říkají naši zákazníci</h2>
+      <p class="text-gray-400">Přes 5000 spokojených uživatelů po celé České republice.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {reviews.map(r => (
+        <div class="glass p-8 rounded-2xl relative hover:-translate-y-1 transition-transform duration-300">
+          <div class="flex gap-1 mb-4">
+            {[...Array(r.rating)].map(() => <Star class="w-5 h-5 fill-yellow-500 text-yellow-500" />)}
+          </div>
+          <p class="text-gray-300 italic mb-6 leading-relaxed">"{r.text}"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold shadow-inner">
+              {r.name.charAt(0)}
+            </div>
+            <div>
+              <p class="text-white font-bold text-sm">{r.name}</p>
+              <p class="text-gray-500 text-xs">{r.role}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+---
+import { ChevronDown } from 'lucide-astro';
+
+const faqs = [
+  { q: "Co potřebuji k používání IPTV?", a: "K používání naší IPTV CZ služby potřebujete pouze stabilní internetové připojení a podporované zařízení (Smart TV, PC, mobil nebo set-top box)." },
+  { q: "Jaký internet potřebuji pro plynulé sledování?", a: "Pro standardní kvalitu stačí stabilních 10 Mbps. Pro bezproblémové sledování 4K přenosů doporučujeme stabilní linku o rychlosti minimálně 25 Mbps, ideálně připojenou k TV kabelem." },
+  { q: "Je služba bez závazků?", a: "Ano, všechna naše předplatná jsou zcela bez závazků. Můžete je kdykoliv obnovit nebo zrušit podle vlastní potřeby." },
+  { q: "Mohu sledovat televizi v zahraničí?", a: "Samozřejmě! Naše IPTV funguje celosvětově bez geoblokace. Ať už jste na dovolené nebo na služební cestě, své oblíbené kanály máte vždy s sebou." },
+  { q: "Jak získám IBO Player zdarma?", a: "ZDARMA aktivaci prémiové aplikace IBO Player poskytujeme exkluzivně ke každému zakoupení 12měsíčního předplatného. Aplikaci spárujeme na dálku po obdržení MAC adresy vaší TV." },
+  { q: "Mohu sledovat na více zařízeních?", a: "Standardní předplatné je pro jedno zařízení. Pro sledování na více zařízeních současně nás prosím kontaktujte pro individuální nabídku." },
+  { q: "Jaké způsoby platby přijímáte?", a: "Podporujeme platby kartou, PayPal a kryptoměny pro maximální anonymitu a pohodlí." }
+];
+---
+<section id="faq" class="py-24">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Často kladené dotazy</h2>
+      <p class="text-gray-400">Vše, co potřebujete vědět o naší internetové televizi.</p>
+    </div>
+    
+    <div class="space-y-4">
+      {faqs.map((faq) => (
+        <details class="glass rounded-xl group" name="faq">
+          <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-white text-lg">
+            <span>{faq.q}</span>
+            <span class="transition group-open:rotate-180">
+              <ChevronDown class="w-5 h-5 text-gray-400" />
+            </span>
+          </summary>
+          <div class="text-gray-400 px-6 pb-6 pt-2">
+            {faq.a}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import { Zap, Tv, Shield, Clock, Smartphone, Globe } from 'lucide-astro';
+
+const features = [
+  { icon: Tv, title: "4K & FHD Kvalita", desc: "Křišťálově čistý obraz bez sekání pro ultimátní zážitek." },
+  { icon: Zap, title: "Anti-Freeze Technologie", desc: "Naše servery garantují 99.9% dostupnost bez výpadků." },
+  { icon: Clock, title: "Zpětné zhlédnutí", desc: "Zmeškali jste pořad? Sledujte z archivu kdykoliv." },
+  { icon: Smartphone, title: "Všechna zařízení", desc: "Smart TV, Android, iOS, PC, MAG a další." },
+  { icon: Shield, title: "Bezpečné řešení", desc: "Špičkové zabezpečení vašich dat a anonymity." },
+  { icon: Globe, title: "IPTV CZ pro celý svět", desc: "Sledujte české programy bez geoblokace odkudkoliv." }
+];
+---
+<section id="features" class="py-24 relative z-10 bg-gray-900/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Proč zvolit IPTV-CZ?</h2>
+      <p class="text-gray-400 text-lg">Prémiové technologie a dedikované servery zajišťují bezchybné sledování internetové televize.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {features.map(f => (
+        <div class="glass rounded-2xl p-8 hover:-translate-y-2 transition-transform duration-300 group">
+          <div class="w-14 h-14 bg-primary-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary-500/20 transition-colors">
+            <f.icon class="w-7 h-7 text-primary-400" />
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">{f.title}</h3>
+          <p class="text-gray-400 leading-relaxed">{f.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

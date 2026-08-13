@@ -1,0 +1,44 @@
+---
+import { Bell } from 'lucide-astro';
+---
+<div id="social-popup" class="fixed bottom-24 left-6 z-40 glass rounded-xl p-4 shadow-2xl flex items-center gap-4 transform translate-y-[150%] opacity-0 transition-all duration-500 max-w-sm">
+  <div class="w-10 h-10 rounded-full bg-secondary-500/20 flex items-center justify-center shrink-0">
+    <Bell class="w-5 h-5 text-secondary-500 animate-pulse" />
+  </div>
+  <div>
+    <p class="text-white text-sm font-medium" id="sp-text">Někdo z Prahy si právě koupil</p>
+    <p class="text-gray-400 text-xs mt-0.5" id="sp-product">12 měsíční IPTV předplatné</p>
+    <p class="text-primary-400 text-[10px] mt-1" id="sp-time">Před 2 minutami</p>
+  </div>
+</div>
+
+<script>
+  const cities = ["Prahy", "Brna", "Ostravy", "Plzně", "Liberce"];
+  const products = ["12 měsíční IPTV předplatné", "6 měsíční IPTV předplatné", "3 měsíční IPTV předplatné"];
+  const times = ["Před minutou", "Před 2 minutami", "Před 5 minutami", "Před chvílí"];
+
+  function showSocialPopup() {
+    const popup = document.getElementById('social-popup');
+    if(!popup || window.innerWidth < 768) return; // Hide on mobile to save space
+
+    // Randomize content
+    document.getElementById('sp-text').innerText = `Někdo z ${cities[Math.floor(Math.random() * cities.length)]} si právě objednal`;
+    document.getElementById('sp-product').innerText = products[Math.floor(Math.random() * products.length)];
+    document.getElementById('sp-time').innerText = times[Math.floor(Math.random() * times.length)];
+
+    // Show popup
+    popup.classList.remove('translate-y-[150%]', 'opacity-0');
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+      popup.classList.add('translate-y-[150%]', 'opacity-0');
+    }, 5000);
+  }
+
+  // Initial delay
+  setTimeout(() => {
+    showSocialPopup();
+    // Then repeat every 25 seconds
+    setInterval(showSocialPopup, 25000);
+  }, 10000);
+</script>
