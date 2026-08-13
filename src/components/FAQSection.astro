@@ -11,6 +11,21 @@ const faqs = [
   { q: "Jaké způsoby platby přijímáte?", a: "Podporujeme platby kartou, PayPal a kryptoměny pro maximální anonymitu a pohodlí." }
 ];
 ---
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.a
+    }
+  }))
+};
+---
+<script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
 <section id="faq" class="py-24">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-16">

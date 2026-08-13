@@ -13,6 +13,19 @@ interface Props {
 const { title, description, schema, lang = "cs" } = Astro.props;
 const currentUrl = new URL(Astro.url.pathname, Astro.site);
 
+const pathname = Astro.url.pathname;
+const isEn = pathname.startsWith('/en/') || pathname === '/en';
+
+let csPath = isEn ? pathname.replace(/^\/en/, '') : pathname;
+if (csPath === '') csPath = '/';
+
+let enPath = isEn ? pathname : `/en${pathname === '/' ? '' : pathname}`;
+if (enPath.endsWith('/') && enPath !== '/') enPath = enPath.slice(0, -1);
+if (csPath.endsWith('/') && csPath !== '/') csPath = csPath.slice(0, -1);
+
+const csUrl = new URL(csPath, Astro.site);
+const enUrl = new URL(enPath, Astro.site);
+
 const defaultSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -34,6 +47,9 @@ const finalSchema = schema || defaultSchema;
   <head>
     <BaseHead title={title} description={description} />
     <link rel="canonical" href={currentUrl} />
+    <link rel="alternate" hreflang="cs" href={csUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={csUrl} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(finalSchema)} />
   </head>
   <body class="bg-gray-950 text-gray-100 font-sans antialiased min-h-screen flex flex-col">
