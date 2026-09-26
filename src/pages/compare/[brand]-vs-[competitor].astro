@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import StickyHeader from '../../components/StickyHeader.astro';
 import FloatingWhatsApp from '../../components/FloatingWhatsApp.astro';
 import { Check, X } from 'lucide-astro';
+import { getCurrentYear } from '../../utils/year';
 
 export const prerender = true;
 export function getStaticPaths() {
@@ -23,7 +24,7 @@ const { competitorName } = Astro.props;
 const schema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": `IPTV-CZ vs ${competitorName}: Detailní srovnání pro rok 2026`,
+  "headline": `IPTV-CZ vs ${competitorName}: Detailní srovnání pro rok ${getCurrentYear()}`,
   "author": {
     "@type": "Organization",
     "name": "IPTV-CZ"
@@ -31,7 +32,7 @@ const schema = {
 };
 ---
 
-<Layout title={`IPTV-CZ vs ${competitorName} - Detailní Srovnání | IPTV-CZ`} description={`Objektivní srovnání IPTV-CZ a ${competitorName}. Zjistěte, která internetová televize nabízí lepší cenu, kvalitu a stabilitu pro rok 2026.`} schema={schema}>
+<Layout title={`IPTV-CZ vs ${competitorName} - Detailní Srovnání | IPTV-CZ`} description={`Objektivní srovnání IPTV-CZ a ${competitorName}. Zjistěte, která internetová televize nabízí lepší cenu, kvalitu a stabilitu pro rok ${getCurrentYear()}.`} schema={schema}>
   <StickyHeader />
   <main class="pt-32 pb-24">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

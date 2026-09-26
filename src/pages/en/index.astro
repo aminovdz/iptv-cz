@@ -17,6 +17,7 @@ import GroupsPopup from '../../components/en/GroupsPopup.astro';
 import ExitPopup from '../../components/en/ExitPopup.astro';
 import SocialPopup from '../../components/en/SocialPopup.astro';
 import LatestGuides from '../../components/en/LatestGuides.astro';
+import { getCurrentYear } from '../../utils/year';
 
 const schema = {
   "@context": "https://schema.org",
@@ -52,7 +53,7 @@ const schema = {
   }
 };
 ---
-<Layout title="IPTV - Best Internet Television 2026 | IPTV-CZ" description="Watch premium IPTV without buffering. 4K quality, stable servers. Get a subscription from 5 EUR per month. Smart TV, Android, iOS support." schema={schema} lang="en">
+<Layout title={`IPTV - Best Internet Television ${getCurrentYear()} | IPTV-CZ`} description="Watch premium IPTV without buffering. 4K quality, stable servers. Get a subscription from 5 EUR per month. Smart TV, Android, iOS support." schema={schema} lang="en">
   <StickyHeader />
   
   <main>

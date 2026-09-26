@@ -2,13 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import StickyHeader from '../components/StickyHeader.astro';
 import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+import { getCurrentYear } from '../utils/year';
 ---
 <Layout title="Obchodní podmínky (Terms of Service) | IPTV-CZ" description="Obchodní podmínky a pravidla používání služby IPTV-CZ.">
   <StickyHeader />
   <main class="pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="glass p-8 md:p-12 rounded-3xl prose prose-invert prose-primary">
       <h1>Obchodní podmínky</h1>
-      <p>Datum poslední aktualizace: Listopad 2026</p>
+      <p>Datum poslední aktualizace: Listopad {getCurrentYear()}</p>
       
       <h2>1. Přijetí podmínek</h2>
       <p>Přístupem k iptv-cz.net a využíváním našich služeb souhlasíte s těmito Obchodními podmínkami. Pokud s nimi nesouhlasíte, nepoužívejte prosím naše služby.</p>

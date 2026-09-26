@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import StickyHeader from '../../components/StickyHeader.astro';
 import FloatingWhatsApp from '../../components/FloatingWhatsApp.astro';
 import { Calendar, User, ArrowLeft, Tv } from 'lucide-astro';
+import { formatWithCurrentYear } from '../../utils/year';
 
 export const prerender = true;
 export async function getStaticPaths() {
@@ -21,11 +22,14 @@ interface Props {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
+const displayTitle = formatWithCurrentYear(post.data.title);
+const displayDescription = formatWithCurrentYear(post.data.description);
+
 const schema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": post.data.title,
-  "description": post.data.description,
+  "headline": displayTitle,
+  "description": displayDescription,
   "datePublished": post.data.pubDate.toISOString(),
   "author": {
     "@type": "Organization",
@@ -34,7 +38,7 @@ const schema = {
 };
 ---
 
-<Layout title={`${post.data.title} | IPTV-CZ`} description={post.data.description} schema={schema}>
+<Layout title={`${displayTitle} | IPTV-CZ`} description={displayDescription} schema={schema}>
   <StickyHeader />
   <main class="pt-32 pb-24">
     <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,7 +47,7 @@ const schema = {
       </a>
       
       <header class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">{post.data.title}</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">{displayTitle}</h1>
         <div class="flex flex-wrap items-center gap-6 text-gray-400 text-sm">
           <div class="flex items-center gap-2">
             <User class="w-4 h-4" /> {post.data.author}
@@ -59,7 +63,7 @@ const schema = {
 
       {post.data.image && (
         <div class="mb-12 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-          <img src={post.data.image} alt={post.data.title} class="w-full object-cover aspect-[21/9]" />
+          <img src={post.data.image} alt={displayTitle} class="w-full object-cover aspect-[21/9]" />
         </div>
       )}
 

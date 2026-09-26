@@ -2,13 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import StickyHeader from '../components/StickyHeader.astro';
 import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+import { getCurrentYear } from '../utils/year';
 ---
 <Layout title="Ochrana soukromí (Privacy Policy) | IPTV-CZ" description="Zásady ochrany osobních údajů pro uživatele IPTV-CZ.">
   <StickyHeader />
   <main class="pt-32 pb-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="glass p-8 md:p-12 rounded-3xl prose prose-invert prose-primary">
       <h1>Zásady ochrany osobních údajů</h1>
-      <p>Datum poslední aktualizace: Listopad 2026</p>
+      <p>Datum poslední aktualizace: Listopad {getCurrentYear()}</p>
       
       <h2>1. Úvod</h2>
       <p>Vaše soukromí je pro IPTV-CZ důležité. Tyto Zásady ochrany osobních údajů vysvětlují, jak shromažďujeme, používáme a chráníme vaše údaje, když používáte naši webovou stránku iptv-cz.net.</p>
