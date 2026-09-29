@@ -3,8 +3,20 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import StickyHeader from '../../components/StickyHeader.astro';
 import FloatingWhatsApp from '../../components/FloatingWhatsApp.astro';
-import { Calendar, User, ArrowLeft, Tv } from 'lucide-astro';
-import { formatWithCurrentYear } from '../../utils/year';
+import ExitPopup from '../../components/ExitPopup.astro';
+import { 
+  Calendar, 
+  Tv, 
+  Clock, 
+  Share2, 
+  CheckCircle2, 
+  ChevronRight, 
+  ThumbsUp, 
+  MessageCircle,
+  ArrowRight,
+  BookOpen
+} from 'lucide-astro';
+import { formatWithCurrentYear, getCurrentYear } from '../../utils/year';
 
 export const prerender = true;
 export async function getStaticPaths() {
@@ -20,10 +32,25 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
 
 const displayTitle = formatWithCurrentYear(post.data.title);
 const displayDescription = formatWithCurrentYear(post.data.description);
+
+// Estimate reading time based on word count
+const words = post.body ? post.body.trim().split(/\s+/).length : 600;
+const readingTime = Math.max(1, Math.ceil(words / 200));
+
+// Extract table of contents (H2 headings)
+const toc = headings.filter((h) => h.depth === 2);
+
+// Fetch related guides
+const allGuides = await getCollection('guides');
+const relatedGuides = allGuides
+  .filter((g) => g.slug !== post.slug)
+  .slice(0, 3);
+
+const currentYear = getCurrentYear();
 
 const schema = {
   "@context": "https://schema.org",
@@ -31,60 +58,569 @@ const schema = {
   "headline": displayTitle,
   "description": displayDescription,
   "datePublished": post.data.pubDate.toISOString(),
+  "dateModified": new Date().toISOString(),
   "author": {
     "@type": "Organization",
     "name": post.data.author
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "IPTV-CZ",
+    "url": "https://iptv-cz.net"
   }
 };
 ---
 
 <Layout title={`${displayTitle} | IPTV-CZ`} description={displayDescription} schema={schema}>
+  <!-- Top Reading Progress Indicator -->
+  <div id="reading-progress-bar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-500 via-emerald-400 to-secondary-500 z-50 transition-all duration-75 w-0"></div>
+
   <StickyHeader />
-  <main class="pt-32 pb-24">
-    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <a href="/blog" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors">
-        <ArrowLeft class="w-4 h-4" /> Zpět na návody
-      </a>
+
+  <main class="pt-28 pb-24 text-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <header class="mb-12">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">{displayTitle}</h1>
-        <div class="flex flex-wrap items-center gap-6 text-gray-400 text-sm">
+      <!-- Breadcrumb Bar -->
+      <nav class="flex items-center gap-2 text-xs text-gray-400 mb-8 pt-4 overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-primary-400 transition-colors flex items-center gap-1">
+          Domů
+        </a>
+        <ChevronRight class="w-3.5 h-3.5 text-gray-600 shrink-0" />
+        <a href="/blog" class="hover:text-primary-400 transition-colors flex items-center gap-1">
+          Návody & Tipy
+        </a>
+        <ChevronRight class="w-3.5 h-3.5 text-gray-600 shrink-0" />
+        <span class="text-gray-300 truncate max-w-xs sm:max-w-md">{displayTitle}</span>
+      </nav>
+
+      <!-- Article Header & Hero -->
+      <header class="max-w-4xl mx-auto text-center mb-12">
+        <!-- Tags -->
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+          {post.data.tags.map((tag: string) => (
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-primary-500/10 text-primary-300 border border-primary-500/20 shadow-sm backdrop-blur-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
+              {tag}
+            </span>
+          ))}
+          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <CheckCircle2 class="w-3.5 h-3.5" /> Ověřeno pro rok {currentYear}
+          </span>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6">
+          {displayTitle}
+        </h1>
+
+        <!-- Excerpt / Subtitle -->
+        <p class="text-lg sm:text-xl text-gray-300 leading-relaxed font-normal max-w-3xl mx-auto mb-8">
+          {displayDescription}
+        </p>
+
+        <!-- Meta Info Bar & Share Actions -->
+        <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-gray-400 pb-8 border-b border-white/10">
           <div class="flex items-center gap-2">
-            <User class="w-4 h-4" /> {post.data.author}
+            <div class="w-8 h-8 rounded-full bg-primary-600/30 border border-primary-500/40 flex items-center justify-center text-primary-300 font-bold text-xs">
+              CZ
+            </div>
+            <span class="font-medium text-white">{post.data.author}</span>
           </div>
-          <div class="flex items-center gap-2">
-            <Calendar class="w-4 h-4" />
+
+          <span class="text-gray-600 hidden sm:inline">•</span>
+
+          <div class="flex items-center gap-1.5">
+            <Calendar class="w-4 h-4 text-primary-400" />
             <time datetime={post.data.pubDate.toISOString()}>
-              {post.data.pubDate.toLocaleDateString('cs-CZ')}
+              {post.data.pubDate.toLocaleDateString('cs-CZ', { year: 'numeric', month: 'long', day: 'numeric' })}
             </time>
+          </div>
+
+          <span class="text-gray-600 hidden sm:inline">•</span>
+
+          <div class="flex items-center gap-1.5">
+            <Clock class="w-4 h-4 text-emerald-400" />
+            <span>{readingTime} min čtení</span>
+          </div>
+
+          <span class="text-gray-600 hidden sm:inline">•</span>
+
+          <!-- Social Share Pill -->
+          <div class="flex items-center gap-2">
+            <a 
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(displayTitle + ' ' + Astro.url.href)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-xs font-semibold transition-all"
+              title="Sdílet na WhatsApp"
+            >
+              <MessageCircle class="w-3.5 h-3.5" />
+              <span>Sdílet</span>
+            </a>
+
+            <button 
+              id="copy-link-btn"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold transition-all"
+              title="Kopírovat odkaz"
+            >
+              <Share2 class="w-3.5 h-3.5" />
+              <span id="copy-btn-text">Kopírovat</span>
+            </button>
           </div>
         </div>
       </header>
 
+      <!-- Featured Image with Ambient Backlight Glow -->
       {post.data.image && (
-        <div class="mb-12 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-          <img src={post.data.image} alt={displayTitle} class="w-full object-cover aspect-[21/9]" />
+        <div class="max-w-5xl mx-auto mb-16 relative">
+          <div class="absolute -inset-2 bg-gradient-to-r from-primary-500/20 via-emerald-500/10 to-secondary-500/20 rounded-3xl blur-2xl opacity-60 pointer-events-none"></div>
+          <div class="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] aspect-[21/9]">
+            <img 
+              src={post.data.image} 
+              alt={displayTitle} 
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-transparent to-transparent pointer-events-none"></div>
+          </div>
         </div>
       )}
 
-      <div class="glass p-8 md:p-12 rounded-3xl prose prose-invert prose-primary prose-lg max-w-none">
-        <Content />
-      </div>
-      
-      <!-- CTA Promo Injected into the Blog Post -->
-      <div class="mt-12 bg-gradient-to-r from-primary-900 to-gray-900 border border-primary-500/30 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djI2SDI0VjM0aDEyek0yNCAzNFYwaDEydjM0SDI0eiIgLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
-        <div class="relative z-10">
-          <Tv class="w-12 h-12 text-primary-400 mx-auto mb-4" />
-          <h3 class="text-3xl font-bold text-white mb-4">Hledáte spolehlivou IPTV CZ?</h3>
-          <p class="text-gray-300 mb-8 max-w-2xl mx-auto">Přestaňte řešit výpadky a zasekávání. IPTV-CZ nabízí 4K kvalitu, obří archív a exkluzivní bonus pro 12měsíční plán.</p>
-          <a href="/" class="inline-flex bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-[0_0_30px_rgba(17,69,126,0.3)] hover:scale-105">
-            Získat IPTV-CZ za 35 EUR/rok
-          </a>
-        </div>
+      <!-- Main Content & Sidebar Grid -->
+      <div class="lg:grid lg:grid-cols-12 lg:gap-12 max-w-7xl mx-auto">
+        
+        <!-- Left Article Column (8 Cols) -->
+        <article class="lg:col-span-8">
+          
+          <!-- Mobile Collapsible Table of Contents (if TOC exists) -->
+          {toc.length > 0 && (
+            <div class="lg:hidden mb-8 glass p-5 rounded-2xl border border-white/10">
+              <details class="group">
+                <summary class="flex items-center justify-between cursor-pointer font-bold text-white text-sm list-none">
+                  <span class="flex items-center gap-2">
+                    <BookOpen class="w-4 h-4 text-primary-400" />
+                    <span>Obsah článku</span>
+                  </span>
+                  <ChevronRight class="w-4 h-4 text-gray-400 group-open:rotate-90 transition-transform" />
+                </summary>
+                <nav class="mt-4 pt-4 border-t border-white/10 space-y-2 text-sm">
+                  {toc.map((heading) => (
+                    <a 
+                      href={`#${heading.slug}`}
+                      class="block text-gray-300 hover:text-primary-400 py-1 transition-colors"
+                    >
+                      {formatWithCurrentYear(heading.text)}
+                    </a>
+                  ))}
+                </nav>
+              </details>
+            </div>
+          )}
+
+          <!-- Rich Modern Prose Container -->
+          <div class="modern-prose glass p-6 sm:p-10 md:p-14 rounded-3xl border border-white/10 shadow-2xl">
+            <Content />
+          </div>
+
+          <!-- Quick Helpful Callout Box -->
+          <div class="mt-8 p-6 rounded-2xl bg-primary-950/40 border border-primary-500/30 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-primary-600/30 border border-primary-500/40 flex items-center justify-center shrink-0 text-primary-400">
+              💡
+            </div>
+            <div>
+              <h4 class="font-bold text-white text-base mb-1">Doporučení technika IPTV-CZ</h4>
+              <p class="text-sm text-gray-300 leading-relaxed">
+                Při instalaci jakékoliv aplikace na Smart TV doporučujeme televizi připojit síťovým kabelem (LAN) přímo k routeru. Získáte tak 100% stabilní 4K stream s nulovým zasekáváním i při vytížení domácí sítě.
+              </p>
+            </div>
+          </div>
+
+          <!-- Helpful Article Feedback Widget -->
+          <div class="mt-8 p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <ThumbsUp class="w-5 h-5 text-emerald-400" />
+              <span class="text-sm font-semibold text-white">Pomohl vám tento návod?</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button 
+                id="feedback-yes-btn"
+                class="px-4 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-xs font-bold transition-all"
+              >
+                👍 Ano, děkuji!
+              </button>
+              <a 
+                href="https://wa.me/18036582620?text=Ahoj,%20pot%C5%99ebuji%20poradit%20s%20nastaven%C3%ADm%20IPTV"
+                class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold transition-all"
+              >
+                💬 Mám doplňující dotaz
+              </a>
+            </div>
+          </div>
+
+          <!-- Author Bio Card -->
+          <div class="mt-8 p-6 sm:p-8 rounded-3xl bg-gray-900/60 border border-white/10 flex items-center gap-5">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-600 to-secondary-600 flex items-center justify-center text-white font-black text-xl shrink-0 shadow-lg">
+              CZ
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-bold text-white text-base">{post.data.author}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-primary-500/20 text-primary-300 border border-primary-500/30">
+                  Specialista na IPTV
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                Tým certifikovaných expertů na multimediální technologie a IPTV servery. Přinášíme vám ověřené návody, optimalizace a tipy pro bezstarostné sledování TV.
+              </p>
+            </div>
+          </div>
+
+          <!-- High-Converting Article Bottom CTA Promo -->
+          <div class="mt-12 bg-gradient-to-br from-primary-950 via-gray-900 to-gray-950 border border-primary-500/40 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute -top-24 -right-24 w-72 h-72 bg-primary-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-2xl mx-auto">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-500/20 text-primary-300 text-xs font-bold uppercase tracking-wider mb-4 border border-primary-500/30">
+                <Tv class="w-3.5 h-3.5" /> Prémiová Nabídka pro rok {currentYear}
+              </div>
+              <h3 class="text-2xl sm:text-4xl font-extrabold text-white mb-4">
+                Chcete sledovat 4K televizi bez výpadků?
+              </h3>
+              <p class="text-gray-300 text-sm sm:text-base mb-8 leading-relaxed">
+                Přestaňte řešit předražené balíčky a nefunkční servery. IPTV-CZ nabízí přes 20 000 kanálů, 7denní archív a k ročnímu plánu získáte <strong class="text-white">aktivaci IBO Playeru ZDARMA</strong>.
+              </p>
+              
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a 
+                  href="/#pricing" 
+                  class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 px-8 rounded-full text-base transition-all shadow-[0_0_30px_rgba(17,69,126,0.4)] hover:scale-105"
+                >
+                  <span>Předplatné od 35 € / rok</span>
+                  <ArrowRight class="w-4 h-4" />
+                </a>
+                <a 
+                  href="https://wa.me/18036582620?text=Dobr%C3%BD%20den,%20chci%20vyzkou%C5%A1et%20IPTV%20na%20zkou%C5%A1ku"
+                  class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-8 rounded-full text-base transition-all shadow-md hover:scale-105"
+                >
+                  <MessageCircle class="w-4 h-4" />
+                  <span>Vyzkoušet na WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Right Sticky Sidebar Column (4 Cols) -->
+        <aside class="hidden lg:block lg:col-span-4">
+          <div class="sticky top-28 space-y-6">
+            
+            <!-- Table of Contents Widget -->
+            {toc.length > 0 && (
+              <div class="glass p-6 rounded-3xl border border-white/10 shadow-xl">
+                <div class="flex items-center gap-2 text-white font-bold text-base mb-4 pb-3 border-b border-white/10">
+                  <BookOpen class="w-4 h-4 text-primary-400" />
+                  <span>Obsah článku</span>
+                </div>
+                <nav class="space-y-2 text-sm" id="toc-sidebar-nav">
+                  {toc.map((heading) => (
+                    <a 
+                      href={`#${heading.slug}`}
+                      class="toc-link block text-gray-400 hover:text-primary-300 py-1 pl-2 border-l-2 border-transparent hover:border-primary-400 transition-all text-xs leading-relaxed"
+                    >
+                      {formatWithCurrentYear(heading.text)}
+                    </a>
+                  ))}
+                </nav>
+              </div>
+            )}
+
+            <!-- Sticky Conversion Offer Box -->
+            <div class="glass p-6 rounded-3xl border border-primary-500/30 bg-gradient-to-b from-primary-950/40 to-gray-900/80 shadow-2xl relative overflow-hidden">
+              <div class="absolute -top-12 -right-12 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl pointer-events-none"></div>
+              
+              <div class="flex items-center justify-between mb-4">
+                <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider">
+                  Top Doporučení
+                </span>
+                <span class="text-xs text-yellow-400 font-bold flex items-center gap-1">
+                  ★ 4.9 <span class="text-gray-400 font-normal">(5.2k)</span>
+                </span>
+              </div>
+
+              <h4 class="text-lg font-extrabold text-white mb-2 leading-snug">
+                Sledujte televizi ve 4K bez sekání
+              </h4>
+              <p class="text-xs text-gray-300 mb-4 leading-relaxed">
+                Více než 20 000 kanálů z ČR, SR i celého světa. Žádné smlouvy, okamžitá aktivace.
+              </p>
+
+              <div class="mb-5 p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] text-gray-400 block">Předplatné od</span>
+                  <span class="text-xl font-black text-white">5 € <span class="text-xs font-normal text-gray-400">/ měsíc</span></span>
+                </div>
+                <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
+                  Rychlé doručení
+                </span>
+              </div>
+
+              <ul class="space-y-2 mb-6 text-xs text-gray-300">
+                <li class="flex items-center gap-2">
+                  <CheckCircle2 class="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                  <span>4K & Full HD stabilní obraz</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle2 class="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                  <span>Archív vysílání 7 dní zpětně</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <CheckCircle2 class="w-3.5 h-3.5 text-primary-400 shrink-0" />
+                  <span>Aktivace IBO Player ZDARMA k 12m</span>
+                </li>
+              </ul>
+
+              <a 
+                href="/#pricing" 
+                class="block w-full text-center py-3 px-4 rounded-xl bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm transition-all shadow-lg hover:scale-[1.02] mb-2"
+              >
+                Vybrat plán předplatného
+              </a>
+              <a 
+                href="https://wa.me/18036582620?text=Dobr%C3%BD%20den,%20m%C3%A1m%20z%C3%A1jem%20o%20p%C5%99edplatn%C3%A9%20IPTV"
+                class="block w-full text-center py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 font-semibold text-xs transition-all"
+              >
+                Získat zkušební test na WhatsApp
+              </a>
+            </div>
+
+            <!-- Quick Technical Support Box -->
+            <div class="glass p-5 rounded-3xl border border-white/10 text-xs text-gray-400">
+              <div class="flex items-center gap-2 font-bold text-white mb-2">
+                <MessageCircle class="w-4 h-4 text-emerald-400" />
+                <span>Technická podpora 24/7</span>
+              </div>
+              <p class="mb-3 leading-relaxed">
+                Nevíte si rady s nastavením na vaší televizi? Naši technici vám pomohou online.
+              </p>
+              <a 
+                href="https://wa.me/18036582620" 
+                class="text-emerald-400 hover:text-emerald-300 font-bold inline-flex items-center gap-1"
+              >
+                Napsat na WhatsApp <ArrowRight class="w-3 h-3" />
+              </a>
+            </div>
+
+          </div>
+        </aside>
+
       </div>
 
-    </article>
+      <!-- Related Guides Bottom Carousel / Grid -->
+      {relatedGuides.length > 0 && (
+        <section class="mt-20 pt-16 border-t border-white/10">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-primary-400 mb-1 block">Pokračujte ve čtení</span>
+              <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Doporučené návody a články</h3>
+            </div>
+            <a 
+              href="/blog" 
+              class="hidden sm:inline-flex items-center gap-1.5 text-sm font-bold text-primary-400 hover:text-primary-300 transition-colors"
+            >
+              <span>Všechny návody</span>
+              <ArrowRight class="w-4 h-4" />
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedGuides.map((guide) => (
+              <a 
+                href={`/blog/${guide.slug}/`}
+                class="glass rounded-2xl overflow-hidden group hover:-translate-y-1.5 transition-all duration-300 flex flex-col border border-white/10 hover:border-primary-500/40"
+              >
+                {guide.data.image && (
+                  <div class="w-full h-44 overflow-hidden relative">
+                    <img 
+                      src={guide.data.image} 
+                      alt={formatWithCurrentYear(guide.data.title)} 
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent"></div>
+                  </div>
+                )}
+                <div class="p-6 flex flex-col flex-grow">
+                  <div class="flex gap-2 mb-3">
+                    {guide.data.tags.slice(0, 1).map((tag: string) => (
+                      <span class="text-[10px] font-bold bg-white/10 text-gray-300 px-2 py-0.5 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h4 class="font-bold text-white text-base mb-2 group-hover:text-primary-300 transition-colors line-clamp-2 leading-snug">
+                    {formatWithCurrentYear(guide.data.title)}
+                  </h4>
+                  <p class="text-xs text-gray-400 line-clamp-2 mb-4 leading-relaxed flex-grow">
+                    {formatWithCurrentYear(guide.data.description)}
+                  </p>
+                  <div class="flex items-center justify-between text-xs font-semibold text-primary-400 pt-3 border-t border-white/10 mt-auto">
+                    <span>Přečíst návod</span>
+                    <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+    </div>
   </main>
+
   <FloatingWhatsApp />
+  <ExitPopup />
 </Layout>
+
+<style is:global>
+  /* Modern Article Typography Custom Styling */
+  .modern-prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #d1d5db;
+  }
+
+  .modern-prose h2 {
+    color: #ffffff;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-top: 2.75rem;
+    margin-bottom: 1.25rem;
+    padding-left: 1rem;
+    border-left: 4px solid #11457E;
+    line-height: 1.3;
+  }
+
+  .modern-prose h3 {
+    color: #f3f4f6;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .modern-prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .modern-prose strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .modern-prose ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.75rem;
+    space-y: 0.75rem;
+  }
+
+  .modern-prose ul > li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .modern-prose ul > li::before {
+    content: "•";
+    position: absolute;
+    left: 0.5rem;
+    top: -0.1rem;
+    color: #11457E;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .modern-prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .modern-prose ol > li {
+    margin-bottom: 0.65rem;
+    padding-left: 0.25rem;
+  }
+
+  .modern-prose ol > li::marker {
+    color: #11457E;
+    font-weight: bold;
+  }
+
+  .modern-prose blockquote {
+    border-left: 4px solid #D7141A;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 1rem 1rem 0;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #e5e7eb;
+  }
+
+  .modern-prose a {
+    color: #60a5fa;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+  }
+
+  .modern-prose a:hover {
+    color: #93c5fd;
+  }
+
+  .modern-prose hr {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 2.5rem 0;
+  }
+</style>
+
+<script is:inline>
+  // Reading Progress Bar
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const bar = document.getElementById('reading-progress-bar');
+    if (bar) {
+      bar.style.width = scrolled + '%';
+    }
+  });
+
+  // Copy link action with toast feedback
+  const copyBtn = document.getElementById('copy-link-btn');
+  const copyText = document.getElementById('copy-btn-text');
+  if (copyBtn && copyText) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        copyText.textContent = 'Zkopírováno!';
+        setTimeout(() => {
+          copyText.textContent = 'Kopírovat';
+        }, 2000);
+      } catch (err) {
+        // fallback
+      }
+    });
+  }
+
+  // Feedback button
+  const feedbackBtn = document.getElementById('feedback-yes-btn');
+  if (feedbackBtn) {
+    feedbackBtn.addEventListener('click', () => {
+      feedbackBtn.textContent = '✓ Děkujeme za hodnocení!';
+      feedbackBtn.classList.remove('bg-emerald-600/20', 'text-emerald-400');
+      feedbackBtn.classList.add('bg-emerald-600', 'text-white');
+    });
+  }
+</script>

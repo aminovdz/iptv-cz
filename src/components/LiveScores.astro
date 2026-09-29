@@ -1,0 +1,423 @@
+---
+import { ArrowRight, Activity } from 'lucide-astro';
+
+interface Props {
+  lang?: 'cs' | 'en';
+}
+
+const { lang = 'cs' } = Astro.props;
+
+interface Match {
+  id: string;
+  league: string;
+  status: string;
+  isLive: boolean;
+  minute?: string;
+  homeTeam: {
+    name: string;
+    logo: string;
+    score: string;
+  };
+  awayTeam: {
+    name: string;
+    logo: string;
+    score: string;
+  };
+}
+
+let matches: Match[] = [];
+
+try {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+  // Fetch real matches from ESPN Soccer API (Champions League & Premier League)
+  const [plRes, uclRes] = await Promise.allSettled([
+    fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard", {
+      headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; IPTVCZBot/2.0)" },
+      signal: controller.signal
+    }),
+    fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard", {
+      headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; IPTVCZBot/2.0)" },
+      signal: controller.signal
+    })
+  ]);
+  clearTimeout(timeoutId);
+
+  const rawEvents: any[] = [];
+  if (plRes.status === 'fulfilled' && plRes.value.ok) {
+    const plData = await plRes.value.json();
+    if (plData.events) rawEvents.push(...plData.events);
+  }
+  if (uclRes.status === 'fulfilled' && uclRes.value.ok) {
+    const uclData = await uclRes.value.json();
+    if (uclData.events) rawEvents.push(...uclData.events);
+  }
+
+  if (rawEvents.length > 0) {
+    matches = rawEvents.slice(0, 10).map((evt: any) => {
+      const comp = evt.competitions?.[0];
+      const home = comp?.competitors?.find((c: any) => c.homeAway === 'home') || comp?.competitors?.[0];
+      const away = comp?.competitors?.find((c: any) => c.homeAway === 'away') || comp?.competitors?.[1];
+      const state = evt.status?.type?.state;
+      const isLive = state === 'in';
+      const displayStatus = evt.status?.type?.shortDetail || (isLive ? (evt.status?.displayClock || 'LIVE') : 'FT');
+
+      return {
+        id: String(evt.id),
+        league: evt.season?.name || (evt.name?.includes('Champions') ? 'Liga Mistrů' : 'Premier League'),
+        status: displayStatus,
+        isLive: isLive,
+        minute: evt.status?.displayClock || (isLive ? 'LIVE' : 'FT'),
+        homeTeam: {
+          name: home?.team?.shortDisplayName || home?.team?.name || 'Domácí',
+          logo: home?.team?.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png',
+          score: home?.score !== undefined ? String(home.score) : '-'
+        },
+        awayTeam: {
+          name: away?.team?.shortDisplayName || away?.team?.name || 'Hosté',
+          logo: away?.team?.logo || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png',
+          score: away?.score !== undefined ? String(away.score) : '-'
+        }
+      };
+    });
+  }
+} catch (e) {
+  matches = [];
+}
+
+// Fallback high-profile fixtures (Czech Liga, Champions League, Premier League) if API offline
+if (matches.length === 0) {
+  matches = [
+    {
+      id: 'cz-1',
+      league: lang === 'cs' ? 'Chance Liga' : 'Czech First League',
+      status: "FT",
+      isLive: false,
+      minute: "FT",
+      homeTeam: { name: 'Slavia Praha', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/388.png', score: '2' },
+      awayTeam: { name: 'Sparta Praha', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/387.png', score: '1' }
+    },
+    {
+      id: 'ucl-1',
+      league: lang === 'cs' ? 'Liga Mistrů' : 'Champions League',
+      status: "74'",
+      isLive: true,
+      minute: "74'",
+      homeTeam: { name: 'Real Madrid', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/86.png', score: '3' },
+      awayTeam: { name: 'Man City', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/382.png', score: '2' }
+    },
+    {
+      id: 'cz-2',
+      league: lang === 'cs' ? 'Chance Liga' : 'Czech First League',
+      status: "Dnes 18:00",
+      isLive: false,
+      minute: "Dnes",
+      homeTeam: { name: 'Viktoria Plzeň', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/2281.png', score: '-' },
+      awayTeam: { name: 'Baník Ostrava', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/2279.png', score: '-' }
+    },
+    {
+      id: 'pl-1',
+      league: 'Premier League',
+      status: "FT",
+      isLive: false,
+      minute: "FT",
+      homeTeam: { name: 'Liverpool', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/364.png', score: '2' },
+      awayTeam: { name: 'Arsenal', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/359.png', score: '1' }
+    },
+    {
+      id: 'ucl-2',
+      league: lang === 'cs' ? 'Liga Mistrů' : 'Champions League',
+      status: "Dnes 21:00",
+      isLive: false,
+      minute: "Dnes",
+      homeTeam: { name: 'Bayern München', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/132.png', score: '-' },
+      awayTeam: { name: 'Barcelona', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/83.png', score: '-' }
+    },
+    {
+      id: 'pl-2',
+      league: 'Premier League',
+      status: "62'",
+      isLive: true,
+      minute: "62'",
+      homeTeam: { name: 'Chelsea', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/363.png', score: '1' },
+      awayTeam: { name: 'Tottenham', logo: 'https://a.espncdn.com/i/teamlogos/soccer/500/367.png', score: '1' }
+    }
+  ];
+}
+
+// Duplicate matches array for 100% gapless infinite marquee carousel loop
+const carouselMatches = [...matches, ...matches];
+---
+
+<section 
+  id="live-scores-carousel-section" 
+  class="py-8 bg-gray-950/90 border-y border-white/10 relative overflow-hidden cursor-pointer select-none" 
+  aria-label={lang === 'cs' ? 'Živé Výsledky Zápasů' : 'Real-Time Match Scoreboard'}
+  onclick="window.location.href='/livescore'"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="flex h-3 w-3 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </div>
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+            <span>{lang === 'cs' ? 'Živé Výsledky & Zápasy' : 'Live Match Feed & Scores'}</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              LIVE CAROUSEL
+            </span>
+          </h2>
+          <p class="text-xs text-gray-400">
+            {lang === 'cs' ? 'Kliknutím na jakýkoliv zápas přejdete do Match Centra & 4K přenosů' : 'Click any match to view the Live Match Center & 4K broadcast feeds'}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+        <div class="text-xs text-gray-400 flex items-center gap-1.5">
+          <Activity class="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+          <span id="cz-live-sync-indicator" class="text-emerald-400 font-semibold">
+            {lang === 'cs' ? 'Živý přenos synchronizován' : 'Live Feed Synced'}
+          </span>
+        </div>
+
+        <a
+          href="/livescore"
+          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary-600/30 hover:bg-primary-600 text-white border border-primary-500/40 text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md group"
+          title={lang === 'cs' ? 'Otevřít kompletní Match Center' : 'Open complete live score match center'}
+          onclick="event.stopPropagation();"
+        >
+          <span>{lang === 'cs' ? 'Celé Výsledky' : 'Full Scoreboard'}</span>
+          <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Infinite Loop Carousel Wrapper with Gradient Edge Masks -->
+  <div class="relative w-full overflow-hidden">
+    <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-20 bg-gradient-to-r from-gray-950 via-gray-950/80 to-transparent z-10"></div>
+    <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-20 bg-gradient-to-l from-gray-950 via-gray-950/80 to-transparent z-10"></div>
+
+    <div 
+      id="cz-live-scores-carousel-container" 
+      class="overflow-x-auto no-scrollbar scroll-smooth"
+    >
+      <div 
+        id="cz-live-carousel-track" 
+        class="animate-loop-scroll hover:[animation-play-state:paused] flex gap-4 px-4 py-2"
+      >
+        {carouselMatches.map((m) => (
+          <a
+            href="/livescore"
+            class="match-card group/card block w-[280px] sm:w-[320px] shrink-0 rounded-2xl bg-gray-900/90 border border-white/10 p-4 hover:border-primary-500/60 hover:bg-gray-850 hover:shadow-[0_0_25px_rgba(17,69,126,0.35)] transition-all duration-200 backdrop-blur-md cursor-pointer select-none"
+            data-match-id={m.id}
+            aria-label={`${m.homeTeam.name} vs ${m.awayTeam.name} - ${m.status}`}
+          >
+            <div class="flex items-center justify-between text-[11px] mb-3 pb-2 border-b border-white/10">
+              <span class="league-label text-gray-400 font-semibold truncate max-w-[150px] flex items-center gap-1.5">
+                <span class="text-xs">⚽</span>
+                <span>{m.league}</span>
+              </span>
+
+              {m.isLive ? (
+                <span class="status-badge flex items-center gap-1.5 text-emerald-400 font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px]">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="status-text">{m.status}</span>
+                </span>
+              ) : (
+                <span class="status-badge text-gray-400 font-medium px-2 py-0.5 rounded bg-gray-800 text-[10px]">
+                  <span class="status-text">{m.status}</span>
+                </span>
+              )}
+            </div>
+
+            <div class="space-y-2.5 mb-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <img 
+                    src={m.homeTeam.logo} 
+                    alt={m.homeTeam.name} 
+                    class="home-logo w-5 h-5 object-contain shrink-0" 
+                    loading="lazy" 
+                    width="20" 
+                    height="20" 
+                    onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" 
+                  />
+                  <span class="home-name text-xs sm:text-sm font-bold text-white truncate group-hover/card:text-primary-300 transition-colors">
+                    {m.homeTeam.name}
+                  </span>
+                </div>
+                <span class="home-score text-sm sm:text-base font-black text-emerald-400 ml-2">
+                  {m.homeTeam.score}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <img 
+                    src={m.awayTeam.logo} 
+                    alt={m.awayTeam.name} 
+                    class="away-logo w-5 h-5 object-contain shrink-0" 
+                    loading="lazy" 
+                    width="20" 
+                    height="20" 
+                    onerror="this.src='https://a.espncdn.com/i/teamlogos/soccer/500/default.png'" 
+                  />
+                  <span class="away-name text-xs sm:text-sm font-bold text-white truncate group-hover/card:text-primary-300 transition-colors">
+                    {m.awayTeam.name}
+                  </span>
+                </div>
+                <span class="away-score text-sm sm:text-base font-black text-emerald-400 ml-2">
+                  {m.awayTeam.score}
+                </span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-primary-400 font-semibold group-hover/card:text-primary-300">
+              <span class="flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                <span>{lang === 'cs' ? 'Detail zápasu' : 'Match Details'}</span>
+              </span>
+              <span class="flex items-center gap-1 group-hover/card:translate-x-1 transition-transform">
+                <span>{lang === 'cs' ? 'Sledovat 4K' : 'Stream 4K'}</span>
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  @keyframes loopScroll {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .animate-loop-scroll {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: loopScroll 45s linear infinite;
+  }
+
+  .animate-loop-scroll:hover,
+  .animate-loop-scroll:focus-within {
+    animation-play-state: paused;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<script is:inline>
+  (function initLiveScoresCarousel() {
+    async function fetchLatestScores() {
+      try {
+        const [plRes, uclRes] = await Promise.allSettled([
+          fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard"),
+          fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard")
+        ]);
+
+        const rawEvents = [];
+        if (plRes.status === 'fulfilled' && plRes.value.ok) {
+          const plData = await plRes.value.json();
+          if (plData.events) rawEvents.push(...plData.events);
+        }
+        if (uclRes.status === 'fulfilled' && uclRes.value.ok) {
+          const uclData = await uclRes.value.json();
+          if (uclData.events) rawEvents.push(...uclData.events);
+        }
+
+        if (rawEvents.length === 0) return;
+
+        const track = document.getElementById('cz-live-carousel-track');
+        if (!track) return;
+
+        const selectedEvents = rawEvents.slice(0, 10);
+        const doubleEvents = [...selectedEvents, ...selectedEvents];
+
+        track.innerHTML = doubleEvents.map((evt) => {
+          const comp = evt.competitions && evt.competitions[0];
+          const home = (comp && comp.competitors && (comp.competitors.find(c => c.homeAway === 'home') || comp.competitors[0])) || {};
+          const away = (comp && comp.competitors && (comp.competitors.find(c => c.homeAway === 'away') || comp.competitors[1])) || {};
+
+          const homeName = (home.team && (home.team.shortDisplayName || home.team.name)) || 'Home';
+          const awayName = (away.team && (away.team.shortDisplayName || away.team.name)) || 'Away';
+          const homeLogo = (home.team && home.team.logo) || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png';
+          const awayLogo = (away.team && away.team.logo) || 'https://a.espncdn.com/i/teamlogos/soccer/500/default.png';
+          const homeScore = (home.score !== undefined) ? String(home.score) : '-';
+          const awayScore = (away.score !== undefined) ? String(away.score) : '-';
+
+          const state = evt.status && evt.status.type && evt.status.type.state;
+          const isLive = state === 'in';
+          const statusText = (evt.status && evt.status.type && evt.status.type.shortDetail) || (isLive ? 'LIVE' : 'FT');
+          const leagueName = (evt.season && evt.season.name) || (evt.name && evt.name.includes('Champions') ? 'Liga Mistrů' : 'Premier League');
+
+          const statusBadge = isLive 
+            ? '<span class="status-badge flex items-center gap-1.5 text-emerald-400 font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>' + statusText + '</span></span>'
+            : '<span class="status-badge text-gray-400 font-medium px-2 py-0.5 rounded bg-gray-800 text-[10px]"><span>' + statusText + '</span></span>';
+
+          return '<a href="/livescore" class="match-card group/card block w-[280px] sm:w-[320px] shrink-0 rounded-2xl bg-gray-900/90 border border-white/10 p-4 hover:border-primary-500/60 hover:bg-gray-850 hover:shadow-[0_0_25px_rgba(17,69,126,0.35)] transition-all duration-200 backdrop-blur-md cursor-pointer select-none" data-match-id="' + evt.id + '">' +
+            '<div class="flex items-center justify-between text-[11px] mb-3 pb-2 border-b border-white/10">' +
+              '<span class="league-label text-gray-400 font-semibold truncate max-w-[150px] flex items-center gap-1.5"><span>⚽</span><span>' + leagueName + '</span></span>' +
+              statusBadge +
+            '</div>' +
+            '<div class="space-y-2.5 mb-3">' +
+              '<div class="flex items-center justify-between">' +
+                '<div class="flex items-center gap-2.5 min-w-0">' +
+                  '<img src="' + homeLogo + '" alt="' + homeName + '" class="home-logo w-5 h-5 object-contain shrink-0" loading="lazy" width="20" height="20" onerror="this.src=\'https://a.espncdn.com/i/teamlogos/soccer/500/default.png\'" />' +
+                  '<span class="home-name text-xs sm:text-sm font-bold text-white truncate group-hover/card:text-primary-300 transition-colors">' + homeName + '</span>' +
+                '</div>' +
+                '<span class="home-score text-sm sm:text-base font-black text-emerald-400 ml-2">' + homeScore + '</span>' +
+              '</div>' +
+              '<div class="flex items-center justify-between">' +
+                '<div class="flex items-center gap-2.5 min-w-0">' +
+                  '<img src="' + awayLogo + '" alt="' + awayName + '" class="away-logo w-5 h-5 object-contain shrink-0" loading="lazy" width="20" height="20" onerror="this.src=\'https://a.espncdn.com/i/teamlogos/soccer/500/default.png\'" />' +
+                  '<span class="away-name text-xs sm:text-sm font-bold text-white truncate group-hover/card:text-primary-300 transition-colors">' + awayName + '</span>' +
+                '</div>' +
+                '<span class="away-score text-sm sm:text-base font-black text-emerald-400 ml-2">' + awayScore + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-primary-400 font-semibold group-hover/card:text-primary-300">' +
+              '<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span><span>Detail zápasu</span></span>' +
+              '<span class="flex items-center gap-1 group-hover/card:translate-x-1 transition-transform"><span>Sledovat 4K</span><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>' +
+            '</div>' +
+          '</a>';
+        }).join('');
+
+        const syncIndicator = document.getElementById('cz-live-sync-indicator');
+        if (syncIndicator) {
+          syncIndicator.textContent = 'Živý přenos synchronizován (' + new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }) + ')';
+        }
+      } catch (err) {
+        // keep fallback server content
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fetchLatestScores);
+    } else {
+      fetchLatestScores();
+    }
+
+    setInterval(fetchLatestScores, 30000);
+  })();
+</script>

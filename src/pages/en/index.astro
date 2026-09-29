@@ -17,6 +17,7 @@ import GroupsPopup from '../../components/en/GroupsPopup.astro';
 import ExitPopup from '../../components/en/ExitPopup.astro';
 import SocialPopup from '../../components/en/SocialPopup.astro';
 import LatestGuides from '../../components/en/LatestGuides.astro';
+import LiveScores from '../../components/LiveScores.astro';
 import { getCurrentYear } from '../../utils/year';
 
 const schema = {
@@ -60,6 +61,8 @@ const schema = {
     <div class="relative">
       <Hero />
     </div>
+    
+    <LiveScores lang="en" />
     
     <FeatureGrid />
     

@@ -17,6 +17,7 @@ import GroupsPopup from '../components/GroupsPopup.astro';
 import ExitPopup from '../components/ExitPopup.astro';
 import SocialPopup from '../components/SocialPopup.astro';
 import LatestGuides from '../components/LatestGuides.astro';
+import LiveScores from '../components/LiveScores.astro';
 
 // V2 Focus: Sports Intent
 const schema = {
@@ -57,6 +58,7 @@ const schema = {
   <StickyHeader />
   <main>
     <div class="relative"><Hero /></div>
+    <LiveScores />
     <FeatureGrid />
     <section id="pricing" class="py-24 bg-gray-900/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
